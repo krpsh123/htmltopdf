@@ -1,0 +1,11 @@
+/home/htmltopdf/api/log/*.log {
+	missingok
+	compress
+	notifempty
+	weekly
+	rotate 5
+	nocreate
+	postrotate
+		if [ $(systemctl is-enabled htmltopdf | grep enabled | wc -l) -ne 0 ];then systemctl restart htmltopdf; fi
+	endscript
+}

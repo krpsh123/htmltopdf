@@ -1,0 +1,16 @@
+[Unit]
+Description=HTML convert to pdf
+After=network.target
+
+[Service]
+Type=forking
+#PIDFile=/home/htmltopdf/api/log/fcgi.pid
+
+ExecStart=/home/htmltopdf/api/htmltopdfd -p 50002 -u htmltopdf -E production --daemonize /home/htmltopdf/api/app.psgi
+
+TimeoutSec=300
+RestartSec=4
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

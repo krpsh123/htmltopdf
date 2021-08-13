@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use FindBin;
+use lib $FindBin::Bin;
+use Plack::Runner;
+use POSIX ();
+
+
+sub version {
+	require Htmltopdf::Config;
+	print Htmltopdf::Config->new->get_version . "\n";
+}
+
+
+my %opt;
+require Getopt::Long;
+Getopt::Long::Configure("no_ignore_case", "no_auto_abbrev", "pass_through");
+Getopt::Long::GetOptions(
+	\%opt,
+	"user|u=s",
+	#"no_meta_pdf",
+	#"no_meta_jpg",
+);
+
+
+my @argv = @ARGV;
+#my $ns_opt = {};
+if ( $opt{user} ) {
+	## вот так семенит пользователя демон Net::Server
+	#my ($uid, $gid, $home) = (getpwnam($user))[2,3,7];
+	#$ns_opt->{user} = $uid;
+	#$ns_opt->{group} = $gid;
+	#$ENV{HOME} = $home;
+	
+	# сменим пользователя сами
+	($ENV{USER}, undef, $ENV{UID}, $ENV{GID}, undef, undef, undef, $ENV{HOME}, $ENV{SHELL}) = getpwnam($opt{user})
+		or die "User '$opt{user}' not found (function 'getpwnam')";
+	POSIX::setgid( $ENV{GID} ) or die "Can't set gid ($!)";
+	POSIX::setuid( $ENV{UID} ) or die "Can't set uid ($!)";
+}
+
+
+my @args = (server => 'Net::Server::PSGI', version_cb => \&version);
+my $runner = Plack::Runner->new(@args);
+$runner->parse_options(@argv);
+#$runner->set_options( no_meta_pdf => $opt{no_meta_pdf} );
+#$runner->set_options( no_meta_jpg => $opt{no_meta_jpg} );
+$runner->run;
+
+
+__END__
+
+=head1 NAME
+
+htmltopdfd - Daemon conversion html to pdf (run app.psgi)
+
+=head1 SYNOPSIS
+
+htmltopdfd [options]
+
+ Options:
+    -h                       print help message
+    -u                       user name
+
+=head1 DESCRIPTION
+
+B<This program> provides an API.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-h, --help>
+
+Print help message and exits.
+
+=item B<-u, --user>
+
+Userid or username to become after the bind process has occured.
+Defaults to the current userid.
+
+=back
+
+=cut
+
