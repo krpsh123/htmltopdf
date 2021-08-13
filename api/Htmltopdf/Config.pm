@@ -50,7 +50,7 @@ sub get_general_var {
 		'tmp_out_file' => 'output.pdf',
 		
 		# wkhtmltopdf
-		'wkhtmltopdf' => "$ENV{HOME}/wkhtmltox/bin/wkhtmltopdf",
+		'wkhtmltopdf' => "/usr/local/bin/wkhtmltopdf",
 		
 		# максимальный размер принимаемого файла (zip архива)
 		# определяется по заголовку Content-Length
