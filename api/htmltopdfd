@@ -52,6 +52,8 @@ $runner->run;
 
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 htmltopdfd - Daemon conversion html to pdf (run app.psgi)
@@ -82,6 +84,17 @@ Userid or username to become after the bind process has occured.
 Defaults to the current userid.
 
 =back
+
+=head1 AUTHOR
+
+Pavel Karpov, C<karpov_p@inbox.ru>.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2021, Pavel Karpov.
+
+This program is free software, you can redistribute it and/or modify it under the terms of the Artistic License version
+2.0.
 
 =cut
 
