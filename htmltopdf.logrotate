@@ -1,4 +1,4 @@
-/home/htmltopdf/api/log/*.log {
+/opt/htmltopdf/api/log/*.log {
 	missingok
 	compress
 	notifempty
