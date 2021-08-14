@@ -3,14 +3,10 @@ Description=HTML convert to pdf
 After=network.target
 
 [Service]
-Type=forking
-#PIDFile=/home/htmltopdf/api/log/fcgi.pid
+ExecStart=/opt/htmltopdf/api/htmltopdfd -p 50002 -u htmltopdf -E production /opt/htmltopdf/api/app.psgi
 
-ExecStart=/home/htmltopdf/api/htmltopdfd -p 50002 -u htmltopdf -E production --daemonize /home/htmltopdf/api/app.psgi
-
-TimeoutSec=300
-RestartSec=4
-Restart=always
+Restart=on-failure
+RestartSec=2
 
 [Install]
 WantedBy=multi-user.target
