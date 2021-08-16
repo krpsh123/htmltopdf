@@ -139,6 +139,7 @@ sub run {
 	push @wf_args, "$self->{env}->{'htmltopdf.tmp_dir'}/$html_file";
 	push @wf_args, ("--encoding", "UTF-8");
 	push @wf_args, ("--disable-javascript");
+	push @wf_args, ("--enable-local-file-access");
 	push @wf_args, $pdf_output_file;
 	
 	
