@@ -35,7 +35,7 @@ yum -y install https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6
 
 creating a user from whom the API daemon will work
 ```sh
-useradd -r -c "api conversion html to pdf" -d /opt/htmltopdf -s /bin/bash htmltopdf
+useradd -r -c "api conversion html to pdf" -d /opt/htmltopdf -m -s /sbin/nologin htmltopdf
 ```
 
 getting the source code of the daemon (focus on the current release)
@@ -45,7 +45,7 @@ wget -O /tmp/htmltopdf_3.0.0.tar.gz https://github.com/krpsh123/htmltopdf/archiv
 
 unpacking the source code
 ```sh
-tar -xvzf /tmp/htmltopdf_3.0.0.tar.gz -C /opt
+tar -xvzf /tmp/htmltopdf_3.0.0.tar.gz --strip=1 -C /opt/htmltopdf
 ```
 
 creating a file for storing authorization tokens on our API: /opt/htmltopdf/api/acl.conf
