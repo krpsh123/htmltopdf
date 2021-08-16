@@ -7971,7 +7971,7 @@ Error message and password prompt
     }
 }</pre>
 </div>
-<div created="20161003100148759" creator="Pavel" modified="20190816104209449" modifier="Pavel" tags="api" title="Документация по API">
+<div created="20161003100148759" creator="Pavel" modified="20210816062030257" modifier="Pavel" tags="api" title="Документация по API">
 <pre>! Принцип работы
 !
 Клиент упаковывает в архив готовую (заполненную) html форму со всеми файлами и посылает на cервер, который возвращает файл с типом, зависящим от заголовка запроса Accept:.
@@ -7985,7 +7985,7 @@ Error message and password prompt
 * URL для запросов:  `http://host_or_ip:50002/htmltopdf`
 * HTTP метод запроса `POST`
 * Параметры передаются через URL
-* Передаваемый на сервер файл передается в теле запроса как бинарные данные. Например вот так можно передать с помощью curl: `curl -X POST --data-binary './input.zip'  http://127.0.0.1:50002/htmltopdf`
+* Передаваемый на сервер файл передается в теле запроса как бинарные данные. Например вот так можно передать с помощью curl: `curl -v -X POST -H 'Authorization: Bearer a02655d46dd0f2160529acaccd4dbf9' --data-binary &quot;@input.zip&quot; 127.0.0.1:50002/htmltopdf &gt; /tmp/output.pdf`
 * Возвращаемый сервером pdf файл содержит страницы размером А4, в котором все отступы (верхний, правый, нижний, левый) равны 0.
 
 ! Список параметров запроса
