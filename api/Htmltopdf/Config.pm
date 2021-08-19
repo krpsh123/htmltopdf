@@ -57,10 +57,10 @@ sub get_general_var {
 		max_size_upload_file => 1024 * 100000,
 		
 		# ghostscript
-		'gs_bin' => '/bin/gs',
+		'gs_bin' => -e '/bin/gs' ? '/bin/gs' : '/usr/bin/gs',
 		
 		# exiftool
-		'exiftool_bin' => '/bin/exiftool',
+		'exiftool_bin' => -e '/bin/exiftool' ? '/bin/exiftool' : '/usr/bin/exiftool',
 	);
 	
 	return \%hash_general_var;
