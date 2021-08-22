@@ -7,17 +7,15 @@ use Net::Server::PSGI::Hook;
 
 sub new {
 	my $class = shift;
-	my $self = bless { @_ }, $class;
-	
-	return $self;
+	return bless { @_ }, $class;
 }
 
 
 sub run {
 	my($self, $app) = @_;
 	
-	# Net::Server сам читает @ARGV
-	# чтоб не было недорузумений обнулим массив параметров
+	# Net::Server reads @ARGV itself
+	# so that there are no misunderstandings, we will reset the array of parameters
 	local @ARGV = ();
 	
 	my $server = Net::Server::PSGI::Hook->new({
@@ -29,7 +27,7 @@ sub run {
 		setsid => $self->{daemonize},
 		user => $self->{ns_opt}->{user} || $>,
 		group => $self->{ns_opt}->{group} || $),
-		# тайм аут на обработку запроса от клиента (по умолчанию 60сек)
+		# timeout for processing a request from the client (default 60s)
 		#timeout_idle => 600,
 	});
 	

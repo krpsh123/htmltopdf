@@ -1,0 +1,11 @@
+/opt/htmltopdf_docker/log/*.log {
+	missingok
+	compress
+	notifempty
+	weekly
+	rotate 5
+	nocreate
+	postrotate
+		docker restart htmltopdf
+	endscript
+}
