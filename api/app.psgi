@@ -15,7 +15,7 @@ use Htmltopdf::Handler;
 
 
 ####### VERSION #######
-our $VERSION = '3.0.0';
+our $VERSION = '3.1.0';
 #######################
 
 
