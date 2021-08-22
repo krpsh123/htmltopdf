@@ -40,12 +40,12 @@ useradd -r -c "api conversion html to pdf" -d /opt/htmltopdf -m -s /sbin/nologin
 
 getting the source code of the daemon (focus on the current release)
 ```sh
-wget -O /tmp/htmltopdf_3.0.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.0.0.tar.gz
+wget -O /tmp/htmltopdf_3.1.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.1.0.tar.gz
 ```
 
 unpacking the source code
 ```sh
-tar -xvzf /tmp/htmltopdf_3.0.0.tar.gz --strip=1 -C /opt/htmltopdf
+tar -xvzf /tmp/htmltopdf_3.1.0.tar.gz --strip=1 -C /opt/htmltopdf
 ```
 
 creating a file for storing authorization tokens on our API: /opt/htmltopdf/api/acl.conf
@@ -80,3 +80,60 @@ cat /opt/htmltopdf/htmltopdf.service > /etc/systemd/system/htmltopdf.service
 systemctl enable htmltopdf && systemctl start htmltopdf
 ```
 
+# Docker
+
+getting the source code of the daemon (focus on the current release)
+```sh
+wget -O /tmp/htmltopdf_3.1.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.1.0.tar.gz
+```
+
+unpacking the source code
+```sh
+tar -xvzf /tmp/htmltopdf_3.1.0.tar.gz -C /tmp
+```
+
+building a docker image
+```sh
+cd /tmp/htmltopdf-3.1.0/docker
+docker build -t htmltopdf:3.1.0 .
+```
+
+creating directories for a container
+```sh
+mkdir -p /opt/htmltopdf_docker/{log,unzipping}
+```
+
+creating a file for storing authorization tokens on our API: /opt/htmltopdf_docker/acl.conf
+```
+# each token on a separate line
+# example:
+# bea606df1a111f5eed3d2b88eba30bcb
+# 56fe5d5ee5abaf9934227091a6b32ab5
+# ...
+#
+# the token can be obtained by the command:
+# echo -n `date '+%a, %d %b %Y %T %z %N'` | md5sum | awk '{print $1}'
+#
+
+# Horns and Hooves branch
+a02655d46dd0f2160529acaccd4dbf9
+```
+
+enabling log rotation
+```sh
+cat /tmp/htmltopdf-3.1.0/docker/htmltopdf.logrotate > /etc/logrotate.d/htmltopdf_docker
+```
+
+launch
+```sh
+docker run \
+  --name htmltopdf \
+  --net host \
+  --detach \
+  --restart unless-stopped \
+  --volume /etc/localtime:/etc/localtime:ro \
+  --volume /opt/htmltopdf_docker/log:/opt/htmltopdf/api/log \
+  --volume /opt/htmltopdf_docker/unzipping:/opt/htmltopdf/api/unzipping \
+  --volume /opt/htmltopdf_docker/acl.conf:/opt/htmltopdf/api/acl.conf \
+  htmltopdf:3.1.0
+```
