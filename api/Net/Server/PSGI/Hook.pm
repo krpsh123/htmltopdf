@@ -18,27 +18,9 @@ use base qw/Net::Server::PSGI/;
 #use Scalar::Util qw/blessed/;
 
 
-# можно включить этот метод, если версия Net::Server::PSGI > 2.007
-#sub process_request {
-#	my $self = shift;
-#	
-#	# по умолчанию Net::Server::PSGI не создает SERVER_NAME
-#	# строку взял из Starman (https://metacpan.org/source/MIYAGAWA/Starman-0.4014/lib/Starman/Server.pm#)
-#	# если ее не будет, то Plack::Middleware::Lint будет ругатся и приложение не будет работать
-#	$ENV{'SERVER_NAME'} = $self->{server}->{sockaddr} || 0; # XXX: needs to be resolved?
-#	
-#	$self->SUPER::process_request;
-#}
-
-
-# этот метод полностью скопирован из Net::Server::PSGI версии 2.008
-# добавлено определение двух переменных окружения SERVER_NAME и SERVER_PROTOCOL
+# this method is copied from Net::Server::PSGI v2.008
 sub process_request {
 	my $self = shift;
-	
-	# for debug
-	#use Data::Dumper;
-	#print Dumper $self;
 	
 	local $SIG{'ALRM'} = sub { die "Server Timeout\n" };
 	my $ok = eval {
@@ -46,15 +28,15 @@ sub process_request {
 		$self->process_headers;
 		
 		
-		# по умолчанию Net::Server::PSGI не создает SERVER_NAME
-		# строку взял из Starman (https://metacpan.org/source/MIYAGAWA/Starman-0.4014/lib/Starman/Server.pm#)
-		# если ее не будет, то Plack::Middleware::Lint будет ругатся и приложение не будет работать
+		# by default, Net:: Server:: PSGI does not create SERVER_NAME
+		# from Starman (https://metacpan.org/source/MIYAGAWA/Starman-0.4014/lib/Starman/Server.pm#)
+		# if there is no SERVER_NAME, then Plack::Middleware:: Lint will swear and the application will not work
 		unless ( defined $ENV{'SERVER_NAME'} ) {
 			$ENV{'SERVER_NAME'} = $self->{server}->{sockaddr} || 0; # XXX: needs to be resolved?
 		}
 		
 		
-		# Net::Server::PSGI до версии 2.008 не создает SERVER_PROTOCOL
+		# Net:: Server:: PSGI before version 2.008 does not create SERVER_PROTOCOL
 		unless ( defined $ENV{'SERVER_PROTOCOL'} ) {
 			$ENV{'SERVER_PROTOCOL'} = 'UNKNOWN';
 			if ( defined $self->http_request_info->{request} ) {
@@ -66,7 +48,8 @@ sub process_request {
 		
 		
 		alarm($self->timeout_idle);
-		my $env = \%ENV;
+		#my $env = \%ENV; https://perldoc.perl.org/perl5180delta#Defined-values-stored-in-environment-are-forced-to-byte-strings
+		my $env = {}; $env->{$_} = $ENV{$_} for keys %ENV;
 		$env->{'psgi.version'}      = [1, 0];
 		$env->{'psgi.url_scheme'}   = ($ENV{'HTTPS'} && $ENV{'HTTPS'} eq 'on') ? 'https' : 'http';
 		$env->{'psgi.input'}        = $self->{'server'}->{'client'};
@@ -91,8 +74,8 @@ sub process_request {
 
 
 
-# Net::Server::PSGI использует функцию blessed при этом он забыл ее подгрузить из модуля Scalar::Util
-# если тело ответа не массив (а например дескриптор файла), то валится с ошибкой
+# Net:: Server::PSI uses the 'blessed' function while he forgot to load it from the Scalar::Util module
+# if the response body is not an array (but, for example, a file descriptor), then it falls with an error
 sub print_psgi_body {
 	my ($self, $body) = @_;
 	my $client = $self->{'server'}->{'client'};
