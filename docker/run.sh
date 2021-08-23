@@ -8,7 +8,7 @@ docker run \
   --volume /opt/htmltopdf_docker/log:/opt/htmltopdf/api/log \
   --volume /opt/htmltopdf_docker/unzipping:/opt/htmltopdf/api/unzipping \
   --volume /opt/htmltopdf_docker/acl.conf:/opt/htmltopdf/api/acl.conf \
-  htmltopdf:3.0.0
+  htmltopdf:3.2.0
 
 #  --restart unless-stopped \
 #  --env HTMLTOPDF_PORT=50003 \
