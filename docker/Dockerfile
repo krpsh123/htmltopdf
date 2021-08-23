@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV WKHTMLTOX_DEB_PATH /tmp/wkhtmltox_0.12.6-1.bionic_amd64.deb
 RUN apt-get update \
+  && echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections \
   && apt-get install --yes --no-install-recommends ca-certificates gnupg2 \
   && apt-get install --yes --no-install-recommends perl wget ttf-mscorefonts-installer ghostscript \
   && apt-get install --yes --no-install-recommends libnet-server-perl libplack-perl liblog-dispatch-perl \
