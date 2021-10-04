@@ -1,0 +1,71 @@
+---
+- name: Installing dependencies for htmltopdf
+  ansible.builtin.yum:
+    name:
+      - perl
+      - wget
+      - liberation-serif-fonts
+      - ghostscript
+      - perl-parent
+      - perl-Net-Server
+      - perl-Plack
+      - perl-Pod-Usage
+      - perl-Log-Dispatch
+      - perl-Archive-Zip
+      - perl-File-Temp
+      - perl-Capture-Tiny
+      - perl-Image-ExifTool
+      - perl-Config-Tiny
+      - https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox-0.12.6-1.centos7.x86_64.rpm
+    state: latest
+  tags:
+    - htmltopdf
+
+- name: Add the user htmltopdf
+  ansible.builtin.user:
+    user: htmltopdf
+    system: yes
+    comment: "api conversion html to pdf"
+    home: /opt/htmltopdf
+    create_home: yes
+    shell: /sbin/nologin
+  tags:
+    - htmltopdf
+
+- name: Download htmltopdf
+  ansible.builtin.get_url:
+    url: https://github.com/krpsh123/htmltopdf/archive/refs/tags/{{ lookup('env', 'TF_VAR_htmltopdf_version') }}.tar.gz
+    dest: /tmp/htmltopdf_{{ lookup('env', 'TF_VAR_htmltopdf_version') }}.tar.gz
+  tags:
+    - htmltopdf
+
+- name: Extract htmltopdf
+  ansible.builtin.unarchive:
+    src: /tmp/htmltopdf_{{ lookup('env', 'TF_VAR_htmltopdf_version') }}.tar.gz
+    dest: /opt/htmltopdf
+    remote_src: yes
+    extra_opts: ["--strip=1"]
+  notify:
+    - chown htmltopdf
+  tags:
+    - htmltopdf
+
+- name: Enabling log rotation
+  ansible.builtin.copy: src=/opt/htmltopdf/htmltopdf.logrotate dest=/etc/logrotate.d/htmltopdf remote_src=yes
+  tags:
+    - htmltopdf
+
+- name: Add systemd htmltopdf.service
+  ansible.builtin.copy: src=/opt/htmltopdf/htmltopdf.service dest=/etc/systemd/system/htmltopdf.service remote_src=yes
+  notify:
+    - systemd reread configs
+  tags:
+    - htmltopdf
+
+- name: Copy acl.conf
+  ansible.builtin.copy: src=files/acl.conf dest=/opt/htmltopdf/api/
+  notify:
+    - chown htmltopdf
+    - restart htmltopdf
+  tags:
+    - htmltopdf

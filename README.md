@@ -137,3 +137,29 @@ docker run \
   --volume /opt/htmltopdf_docker/acl.conf:/opt/htmltopdf/api/acl.conf \
   htmltopdf:3.2.0
 ```
+
+# Infrastructure as code
+
+> The environment variable TF_VAR_htmltopdf_version specifies the htmltopdf version to installed.
+
+creating an AWS instance
+```sh
+cd iac/terraform
+terraform init
+export TF_VAR_htmltopdf_version=3.2.0 && terraform apply
+```
+
+get the ip address of instance
+```sh
+cd iac/ansible
+terraform -chdir=../terraform/ output -raw instance_public_ip_addr
+```
+
+in the inventory file "iac/ansible/hosts" change the variable ansible_host
+and run playbook
+```sh
+cd iac/ansible
+export TF_VAR_htmltopdf_version=3.2.0 && ansible-playbook playbook.yml
+```
+
+after successful installation, the service will be available at the url http://instance_public_ip_addr/htmltopdf
