@@ -1,0 +1,60 @@
+# run like this:
+#   export TF_VAR_htmltopdf_version=3.3.0 && ansible-playbook playbook.yml
+
+---
+- name: Install and configured htmltopdf service
+  hosts: htmltopdf
+  become: yes
+
+
+  tasks:
+    - name: Set timezone to Europe/Moscow
+      community.general.timezone:
+        name: Europe/Moscow
+      tags:
+        - common
+
+    - name: Add EPEL repository
+      ansible.builtin.yum:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        state: present
+      tags:
+        - common
+
+    - name: Include htmltopdf
+      ansible.builtin.include_tasks:
+        file: htmltopdf.yml
+      tags:
+        - htmltopdf
+
+    - name: Include lighttpd
+      ansible.builtin.include_tasks:
+        file: lighttpd.yml
+      tags:
+        - lighttpd
+
+
+  handlers:
+    - name: systemd reread configs
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: restart htmltopdf
+      ansible.builtin.systemd:
+        name:  htmltopdf
+        state: restarted
+        enabled: yes
+
+    - name: chown htmltopdf
+      ansible.builtin.file:
+        path: /opt/htmltopdf
+        owner: htmltopdf
+        group: htmltopdf
+        state: directory
+        recurse: yes
+
+    - name: restart lighttpd
+      ansible.builtin.systemd:
+        name:  lighttpd
+        state: restarted
+        enabled: yes

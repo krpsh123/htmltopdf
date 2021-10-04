@@ -1,0 +1,26 @@
+---
+- name: Installing lighttpd
+  ansible.builtin.yum:
+    name:
+      - lighttpd
+    state: latest
+  tags:
+    - lighttpd
+
+- name: Copy lighttpd conf files
+  ansible.builtin.copy:
+    src:  "{{ item.src }}"
+    dest: "{{ item.dst }}"
+  loop:
+    - { src: 'files/lighttpd/lighttpd.conf', dst: '/etc/lighttpd/lighttpd.conf' }
+    - { src: 'files/lighttpd/modules.conf', dst: '/etc/lighttpd/modules.conf' }
+    - { src: 'files/lighttpd/conf.d/proxy.conf', dst: '/etc/lighttpd/conf.d/proxy.conf' }
+  tags:
+    - lighttpd
+
+- name: Check lighttpd.conf
+  ansible.builtin.command: lighttpd -tt -f /etc/lighttpd/lighttpd.conf
+  notify:
+    - restart lighttpd
+  tags:
+    - lighttpd
