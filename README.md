@@ -40,12 +40,12 @@ useradd -r -c "api conversion html to pdf" -d /opt/htmltopdf -m -s /sbin/nologin
 
 getting the source code of the daemon (focus on the current release)
 ```sh
-wget -O /tmp/htmltopdf_3.2.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.2.0.tar.gz
+wget -O /tmp/htmltopdf_3.3.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.3.0.tar.gz
 ```
 
 unpacking the source code
 ```sh
-tar -xvzf /tmp/htmltopdf_3.2.0.tar.gz --strip=1 -C /opt/htmltopdf
+tar -xvzf /tmp/htmltopdf_3.3.0.tar.gz --strip=1 -C /opt/htmltopdf
 ```
 
 creating a file for storing authorization tokens on our API: /opt/htmltopdf/api/acl.conf
@@ -84,18 +84,18 @@ systemctl enable htmltopdf && systemctl start htmltopdf
 
 getting the source code of the daemon (focus on the current release)
 ```sh
-wget -O /tmp/htmltopdf_3.2.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.2.0.tar.gz
+wget -O /tmp/htmltopdf_3.3.0.tar.gz https://github.com/krpsh123/htmltopdf/archive/refs/tags/3.3.0.tar.gz
 ```
 
 unpacking the source code
 ```sh
-tar -xvzf /tmp/htmltopdf_3.2.0.tar.gz -C /tmp
+tar -xvzf /tmp/htmltopdf_3.3.0.tar.gz -C /tmp
 ```
 
 building a docker image
 ```sh
-cd /tmp/htmltopdf-3.2.0/docker
-docker build -t htmltopdf:3.2.0 .
+cd /tmp/htmltopdf-3.3.0/docker
+docker build -t htmltopdf:3.3.0 .
 ```
 
 creating directories for a container
@@ -121,7 +121,7 @@ a02655d46dd0f2160529acaccd4dbf9
 
 enabling log rotation
 ```sh
-cat /tmp/htmltopdf-3.2.0/docker/htmltopdf.logrotate > /etc/logrotate.d/htmltopdf_docker
+cat /tmp/htmltopdf-3.3.0/docker/htmltopdf.logrotate > /etc/logrotate.d/htmltopdf_docker
 ```
 
 launch
@@ -135,7 +135,7 @@ docker run \
   --volume /opt/htmltopdf_docker/log:/opt/htmltopdf/api/log \
   --volume /opt/htmltopdf_docker/unzipping:/opt/htmltopdf/api/unzipping \
   --volume /opt/htmltopdf_docker/acl.conf:/opt/htmltopdf/api/acl.conf \
-  htmltopdf:3.2.0
+  htmltopdf:3.3.0
 ```
 
 # Infrastructure as code
@@ -146,7 +146,7 @@ creating an AWS instance
 ```sh
 cd iac/terraform
 terraform init
-export TF_VAR_htmltopdf_version=3.2.0 && terraform apply
+export TF_VAR_htmltopdf_version=3.3.0 && terraform apply
 ```
 
 get the ip address of instance
@@ -159,7 +159,7 @@ in the inventory file "iac/ansible/hosts" change the variable ansible_host
 and run playbook
 ```sh
 cd iac/ansible
-export TF_VAR_htmltopdf_version=3.2.0 && ansible-playbook playbook.yml
+export TF_VAR_htmltopdf_version=3.3.0 && ansible-playbook playbook.yml
 ```
 
 after successful installation, the service will be available at the url http://instance_public_ip_addr/htmltopdf

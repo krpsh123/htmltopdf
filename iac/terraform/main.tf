@@ -1,7 +1,7 @@
 // Creating AWS EC2 with htmtopdf application
 //
 // run like this:
-//   export TF_VAR_htmltopdf_version=3.2.0 && terraform apply
+//   export TF_VAR_htmltopdf_version=3.3.0 && terraform apply
 
 
 provider "aws" {
